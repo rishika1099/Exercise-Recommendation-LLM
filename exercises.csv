@@ -1,0 +1,61 @@
+id,title,description,tags,body_part,difficulty,equipment,injury_focus,intensity
+EX_001,Single-Leg Box Squat,Controlled unilateral squat improving knee stability,"squat, unilateral",lower,beginner,bodyweight,knee rehab,low
+EX_002,Depth Jumps,Explosive jump with minimal ground contact,"plyometric, jump",lower,advanced,none,performance,high
+EX_003,Copenhagen Plank,Isometric adductor strengthening,"plank, adductor",core,intermediate,none,groin rehab,medium
+EX_004,Seated DB Shoulder Press,Vertical pressing for shoulder strength,"press, shoulder",upper,intermediate,dumbbell,none,medium
+EX_005,Wall Sit,Isometric quad endurance hold,"isometric, quad",lower,beginner,bodyweight,knee rehab,low
+EX_006,Lateral Band Walk,Hip stability activation,"glute med, band",lower,beginner,band,hip rehab,low
+EX_007,Barbell Back Squat,Heavy compound squat,"squat, compound",lower,advanced,barbell,none,high
+EX_008,Single-Leg Hop,Explosive unilateral hop,"plyometric, unilateral",lower,advanced,none,performance,high
+EX_009,Dead Bug,Core stabilization drill,"core, stability",core,beginner,bodyweight,back rehab,low
+EX_010,Clamshell,Hip external rotation exercise,glute med,lower,beginner,none,hip rehab,low
+EX_011,Push-Up,Bodyweight upper push,"push, bodyweight",upper,beginner,bodyweight,none,medium
+EX_012,Plank Shoulder Taps,Dynamic plank with shoulder load,"plank, stability",core,intermediate,bodyweight,shoulder rehab,low
+EX_013,Trap Bar Deadlift,Lower body hinge strength,"hinge, compound",lower,advanced,barbell,none,high
+EX_014,Bird Dog,Spinal stability drill,"core, rehab",core,beginner,bodyweight,back rehab,low
+EX_015,Sprint Intervals,High intensity sprint work,"sprint, conditioning",full body,advanced,none,performance,high
+EX_016,Tempo Runs,Moderate sustained running,"endurance, running",full body,intermediate,none,performance,medium
+EX_017,Step-Ups,Controlled unilateral strength,"step, unilateral",lower,beginner,bodyweight,knee rehab,low
+EX_018,Overhead Carry,Loaded shoulder stability,"carry, stability",full body,intermediate,dumbbell,shoulder rehab,medium
+EX_019,Bench Press,Horizontal press strength,"press, compound",upper,advanced,barbell,none,high
+EX_020,Side Plank,Lateral core stability,"plank, core",core,beginner,bodyweight,back rehab,low
+EX_021,Reverse Lunges,Backward stepping lunge,"lunge, unilateral",lower,beginner,bodyweight,knee rehab,low
+EX_022,Forward Lunges,Forward lunge movement,"lunge, unilateral",lower,intermediate,bodyweight,none,medium
+EX_023,Bulgarian Split Squat,Elevated rear foot squat,"squat, unilateral",lower,advanced,bodyweight,none,high
+EX_024,Box Jumps,Explosive jump onto box,plyometric,lower,advanced,none,performance,high
+EX_025,Hamstring Bridge,Isometric posterior chain hold,"bridge, hamstring",lower,beginner,bodyweight,hamstring rehab,low
+EX_026,Nordic Curl,Eccentric hamstring strength,"curl, hamstring",lower,advanced,bodyweight,none,high
+EX_027,Calf Raises,Ankle plantarflexion strength,calf,lower,beginner,bodyweight,ankle rehab,low
+EX_028,Single-Leg Calf Raise,Unilateral calf strength,"calf, unilateral",lower,intermediate,bodyweight,ankle rehab,medium
+EX_029,Ankle Hops,Reactive ankle stiffness drill,plyometric,lower,intermediate,none,performance,medium
+EX_030,Broad Jumps,Horizontal explosive power,"jump, plyometric",lower,advanced,none,performance,high
+EX_031,Hollow Hold,Anterior core isometric,core,core,beginner,bodyweight,back rehab,low
+EX_032,Hanging Knee Raises,Dynamic core lift,"core, hanging",core,intermediate,bar,none,medium
+EX_033,Russian Twists,Rotational core exercise,"core, rotation",core,intermediate,bodyweight,none,medium
+EX_034,Cable Rows,Horizontal pulling movement,"pull, upper",upper,intermediate,cable,none,medium
+EX_035,Pull-Ups,Vertical pulling strength,"pull, bodyweight",upper,advanced,bar,none,high
+EX_036,Face Pulls,Shoulder stability and posture,"pull, shoulder",upper,beginner,cable,shoulder rehab,low
+EX_037,YT Raises,Scapular control exercise,"shoulder, rehab",upper,beginner,dumbbell,shoulder rehab,low
+EX_038,Lateral Raises,Isolated shoulder abduction,shoulder,upper,beginner,dumbbell,none,medium
+EX_039,Incline DB Press,Upper chest pressing,press,upper,intermediate,dumbbell,none,medium
+EX_040,Dips,Bodyweight pressing movement,push,upper,advanced,bodyweight,none,high
+EX_041,Cat-Cow,Spinal mobility drill,"mobility, spine",core,beginner,bodyweight,back rehab,low
+EX_042,Thread the Needle,Thoracic mobility exercise,"mobility, rotation",core,beginner,bodyweight,back rehab,low
+EX_043,Hip Flexor Stretch,Stretch for anterior hip,mobility,lower,beginner,bodyweight,hip rehab,low
+EX_044,Downward Dog,Full body stretch,mobility,full body,beginner,bodyweight,none,low
+EX_045,90/90 Hip Stretch,Hip rotation mobility,mobility,lower,beginner,bodyweight,hip rehab,low
+EX_046,Sled Push,Horizontal force production,conditioning,lower,advanced,sled,performance,high
+EX_047,Sled Pull,Posterior chain conditioning,conditioning,lower,advanced,sled,performance,high
+EX_048,Battle Ropes,Upper body conditioning,conditioning,full body,intermediate,rope,performance,high
+EX_049,Rowing Machine,Endurance conditioning,endurance,full body,beginner,machine,performance,medium
+EX_050,Cycling,Endurance cardio,endurance,full body,beginner,bike,performance,medium
+EX_051,Glute Bridge,Basic posterior chain activation,bridge,lower,beginner,bodyweight,hip rehab,low
+EX_052,Single-Leg Bridge,Unilateral glute strength,bridge,lower,intermediate,bodyweight,hip rehab,medium
+EX_053,Hip Thrust,Loaded glute strength,hip thrust,lower,advanced,barbell,none,high
+EX_054,Kettlebell Swing,Explosive hip hinge,hinge,lower,intermediate,kettlebell,performance,high
+EX_055,Good Morning,Posterior chain hinge,hinge,lower,advanced,barbell,none,high
+EX_056,Isometric Lunge Hold,Static lunge stability,lunge,lower,beginner,bodyweight,knee rehab,low
+EX_057,Single-Leg Balance,Balance and proprioception,balance,lower,beginner,bodyweight,ankle rehab,low
+EX_058,Perturbation Training,External stability challenges,stability,full body,intermediate,band,knee rehab,medium
+EX_059,Agility Ladder Drills,Footwork and coordination,agility,full body,intermediate,ladder,performance,medium
+EX_060,Shuttle Runs,Change of direction conditioning,conditioning,full body,advanced,none,performance,high

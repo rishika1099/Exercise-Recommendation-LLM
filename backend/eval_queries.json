@@ -1,0 +1,39 @@
+{
+  "queries": [
+    {
+      "query": "knee pain low impact rehab",
+      "expected_ids": ["EX_001","EX_005","EX_017","EX_021","EX_056","EX_025","EX_051","EX_006","EX_010","EX_058"],
+      "expected_intent": "rehab",
+      "expected_top_1": "EX_001",
+      "description": "Knee rehab — low-impact knee-focused exercises"
+    },
+    {
+      "query": "explosive drills for a winger",
+      "expected_ids": ["EX_002","EX_008","EX_024","EX_030","EX_059","EX_029","EX_015","EX_054"],
+      "expected_intent": "performance",
+      "expected_top_1": "EX_002",
+      "description": "Athletic performance — plyometric and agility work"
+    },
+    {
+      "query": "upper body rehab no weights",
+      "expected_ids": ["EX_012","EX_036","EX_037","EX_011","EX_040","EX_035","EX_020","EX_009"],
+      "expected_intent": "rehab",
+      "expected_top_1": "EX_036",
+      "description": "Shoulder rehab — bodyweight upper body"
+    },
+    {
+      "query": "hip mobility and flexibility",
+      "expected_ids": ["EX_043","EX_045","EX_006","EX_010","EX_051","EX_052","EX_044","EX_053"],
+      "expected_intent": "mobility",
+      "expected_top_1": "EX_045",
+      "description": "Mobility — hip-focused stretches and activation"
+    },
+    {
+      "query": "beginner core stability",
+      "expected_ids": ["EX_009","EX_014","EX_031","EX_020","EX_041","EX_042","EX_012","EX_033"],
+      "expected_intent": "rehab",
+      "expected_top_1": "EX_009",
+      "description": "Core — beginner stability exercises"
+    }
+  ]
+}

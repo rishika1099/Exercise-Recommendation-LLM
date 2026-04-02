@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apollo — AI Coaching</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2300e5ff'/><text x='50' y='75' font-size='70' font-family='serif' font-weight='bold' text-anchor='middle' fill='%23080c10'>A</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #080c10;
+    --surface:   #0e1520;
+    --surface2:  #141d2b;
+    --border:    #1e2d42;
+    --accent:    #00e5ff;
+    --accent2:   #ff6b35;
+    --text:      #d4e4f0;
+    --muted:     #5a7a96;
+    --green:     #00ff8c;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body:    'DM Sans', sans-serif;
+    --font-mono:    'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 32px 0 48px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,229,255,.4);
+  }
+  .tagline {
+    font-size: .75rem;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .status-dot {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: .7rem; color: var(--muted);
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+         box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+  /* ── Pipeline ── */
+  .pipeline {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 32px;
+  }
+  .pipe-step {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 10px 12px; text-align: center;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .pipe-step.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0,229,255,.2);
+  }
+  .pipe-label {
+    font-family: var(--font-mono); font-size: .58rem;
+    color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
+  }
+  .pipe-desc { font-size: .68rem; color: var(--muted); margin-top: 4px; }
+  .pipe-arrow { color: var(--muted); padding: 0 6px; font-size: 1rem; flex-shrink: 0; }
+
+  /* ── Query section ── */
+  .query-section { margin-bottom: 40px; }
+  .query-label {
+    font-family: var(--font-mono); font-size: .7rem; letter-spacing: 3px;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .query-box {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: border-color .2s;
+  }
+  .query-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(0,229,255,.2); }
+
+  textarea {
+    width: 100%; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: var(--font-body); font-size: 1rem;
+    padding: 18px 20px 60px; resize: none; min-height: 110px;
+    line-height: 1.6;
+  }
+  textarea::placeholder { color: var(--muted); }
+
+  .query-actions {
+    position: absolute; bottom: 14px; right: 14px;
+    display: flex; gap: 10px; align-items: center;
+  }
+
+  .example-queries {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+  }
+  .chip {
+    font-size: .72rem; font-family: var(--font-mono);
+    color: var(--muted); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 2px;
+    padding: 5px 12px; cursor: pointer; transition: all .15s;
+    white-space: nowrap;
+  }
+  .chip:hover { color: var(--accent); border-color: var(--accent); }
+
+  .profile-toggle {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    font-family: var(--font-mono); font-size: .72rem; color: var(--muted);
+    cursor: pointer; user-select: none; width: fit-content;
+  }
+  .profile-toggle:hover { color: var(--accent); }
+  .toggle-icon { font-size: .9rem; transition: transform .2s; }
+  .toggle-icon.open { transform: rotate(90deg); }
+
+  .profile-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 20px; margin-bottom: 20px;
+    display: none; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .profile-panel.visible { display: grid; }
+
+  .field-group label {
+    display: block; font-family: var(--font-mono); font-size: .65rem;
+    letter-spacing: 2px; color: var(--accent); margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .field-group select,
+  .field-group input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--font-body); font-size: .85rem;
+    padding: 8px 12px; border-radius: 2px; outline: none;
+  }
+  .field-group select:focus,
+  .field-group input:focus { border-color: var(--accent); }
+  .field-group select option { background: var(--surface2); }
+
+  .btn-primary {
+    background: var(--accent); color: var(--bg);
+    font-family: var(--font-display); font-size: 1rem; letter-spacing: 2px;
+    border: none; padding: 10px 24px; cursor: pointer; border-radius: 2px;
+    transition: all .15s;
+  }
+  .btn-primary:hover { background: #33ecff; box-shadow: 0 0 16px rgba(0,229,255,.4); }
+  .btn-primary:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  .btn-clear {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); font-family: var(--font-mono); font-size: .7rem;
+    padding: 8px 14px; cursor: pointer; border-radius: 2px;
+    transition: all .15s;
+  }
+  .btn-clear:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  #loading {
+    display: none; text-align: center; padding: 60px 0;
+    font-family: var(--font-mono); color: var(--muted);
+  }
+  .spinner {
+    width: 36px; height: 36px; margin: 0 auto 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: .75rem; letter-spacing: 3px; text-transform: uppercase; }
+  .loading-sub { font-size: .65rem; color: var(--border); margin-top: 8px; }
+
+  #results-meta {
+    display: none; font-family: var(--font-mono); font-size: .7rem;
+    color: var(--muted); margin-bottom: 24px;
+    display: flex; gap: 20px; align-items: center;
+  }
+  .meta-tag { display: flex; gap: 6px; align-items: center; }
+  .meta-tag span { color: var(--accent); }
+
+  #results { display: none; }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 24px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 16px;
+    align-items: start;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: slideIn .3s ease forwards;
+  }
+  @keyframes slideIn { to { opacity: 1; transform: none; } }
+  .result-card:hover { border-color: rgba(0,229,255,.25); }
+  .result-card:nth-child(1) { animation-delay: .05s; }
+  .result-card:nth-child(2) { animation-delay: .1s; }
+  .result-card:nth-child(3) { animation-delay: .15s; }
+  .result-card:nth-child(4) { animation-delay: .2s; }
+  .result-card:nth-child(5) { animation-delay: .25s; }
+
+  .rank-num {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--border);
+    padding-top: 2px;
+  }
+  .rank-num.top { color: var(--accent); text-shadow: 0 0 12px rgba(0,229,255,.3); }
+
+  .card-title {
+    font-family: var(--font-display); font-size: 1.4rem;
+    letter-spacing: 1px; color: var(--text); margin-bottom: 4px;
+  }
+  .card-desc { font-size: .85rem; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+  .card-reason {
+    font-size: .8rem; color: var(--green); font-style: italic;
+    margin-bottom: 12px; line-height: 1.4;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: var(--font-mono); font-size: .65rem;
+    padding: 3px 8px; border-radius: 2px; letter-spacing: 1px;
+  }
+  .tag-body   { background: rgba(0,229,255,.08); color: var(--accent); border: 1px solid rgba(0,229,255,.2); }
+  .tag-diff   { background: rgba(255,107,53,.08); color: var(--accent2); border: 1px solid rgba(255,107,53,.2); }
+  .tag-equip  { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
+  .tag-inj    { background: rgba(0,255,140,.08); color: var(--green); border: 1px solid rgba(0,255,140,.2); }
+
+  .score-bar {
+    width: 4px; height: 100%; min-height: 60px;
+    border-radius: 2px; background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .score-fill {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, var(--accent), rgba(0,229,255,.2));
+    border-radius: 2px;
+    transition: height .5s ease .3s;
+  }
+
+  #error {
+    display: none; background: rgba(255,107,53,.08);
+    border: 1px solid rgba(255,107,53,.3); border-radius: 4px;
+    padding: 16px 20px; font-family: var(--font-mono); font-size: .8rem;
+    color: var(--accent2);
+  }
+
+  footer {
+    margin-top: 60px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: .65rem; color: var(--border);
+    display: flex; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="logo">APOLLO</div>
+      <div class="tagline">AI-Powered Training Intelligence</div>
+    </div>
+    <div class="status-dot">
+      <div class="dot"></div>
+      <span>LLM ACTIVE</span>
+    </div>
+  </header>
+
+  <!-- Pipeline diagram -->
+  <div class="pipeline">
+    <div class="pipe-step" id="pipe-1">
+      <div class="pipe-label">Query</div>
+      <div class="pipe-desc">User input</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" id="pipe-2">
+      <div class="pipe-label">Retrieval</div>
+      <div class="pipe-desc">Keyword + fuzzy</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" id="pipe-3">
+      <div class="pipe-label">LLM Re-rank</div>
+      <div class="pipe-desc">Claude scores</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" id="pipe-4">
+      <div class="pipe-label">Results</div>
+      <div class="pipe-desc">Top 5</div>
+    </div>
+  </div>
+
+  <!-- Query -->
+  <section class="query-section">
+    <div class="query-label">// describe your training need</div>
+    <div class="query-box">
+      <textarea id="queryInput" placeholder="e.g. 'Knee pain, need low-impact rehab exercises' or 'Explosive drills for a winger'" rows="3"></textarea>
+      <div class="query-actions">
+        <button class="btn-clear" onclick="clearAll()">CLEAR</button>
+        <button class="btn-primary" id="searchBtn" onclick="search()">SEARCH</button>
+      </div>
+    </div>
+    <div class="example-queries">
+      <span class="chip" onclick="setQuery(this)">knee pain, low-impact</span>
+      <span class="chip" onclick="setQuery(this)">explosive drills for a winger</span>
+      <span class="chip" onclick="setQuery(this)">upper body rehab, no weights</span>
+      <span class="chip" onclick="setQuery(this)">shoulder stability exercises</span>
+      <span class="chip" onclick="setQuery(this)">beginner core strength</span>
+      <span class="chip" onclick="setQuery(this)">hip rehab after surgery</span>
+    </div>
+  </section>
+
+  <!-- Profile Panel -->
+  <div class="profile-toggle" onclick="toggleProfile(this)">
+    <span class="toggle-icon">▶</span>
+    <span>PERSONALIZE WITH USER PROFILE (OPTIONAL)</span>
+  </div>
+  <div class="profile-panel" id="profilePanel">
+    <div class="field-group">
+      <label>Goal</label>
+      <select id="pGoal">
+        <option value="">— any —</option>
+        <option value="rehab">Rehabilitation</option>
+        <option value="strength">Strength</option>
+        <option value="endurance">Endurance</option>
+        <option value="performance">Athletic Performance</option>
+        <option value="mobility">Mobility & Flexibility</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Experience Level</label>
+      <select id="pLevel">
+        <option value="">— any —</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Injuries / Constraints</label>
+      <input id="pInjuries" type="text" placeholder="e.g. ACL tear, no jumping" />
+    </div>
+    <div class="field-group">
+      <label>Available Equipment</label>
+      <input id="pEquipment" type="text" placeholder="e.g. bodyweight only, dumbbells" />
+    </div>
+    <div class="field-group">
+      <label>Preferred Intensity</label>
+      <select id="pIntensity">
+        <option value="">— any —</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Retrieving exercises…</div>
+    <div class="loading-sub" id="loadingSub">Stage 1 of 2 — keyword + semantic search</div>
+  </div>
+
+  <!-- Error -->
+  <div id="error"></div>
+
+  <!-- Results meta -->
+  <div id="results-meta"></div>
+
+  <!-- Results -->
+  <div id="results"></div>
+
+  <footer>
+    <span>APOLLO COACHING INTELLIGENCE v2.0</span>
+    <span>RETRIEVAL → INTENT → LLM RE-RANK → TOP-5</span>
+  </footer>
+</div>
+
+<script>
+const EXERCISES = [
+  {id:"EX_001",title:"Single-Leg Box Squat",description:"Controlled unilateral squat improving knee stability",tags:"squat, unilateral",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"knee rehab",intensity:"low"},
+  {id:"EX_002",title:"Depth Jumps",description:"Explosive jump with minimal ground contact",tags:"plyometric, jump",body_part:"lower",difficulty:"advanced",equipment:"none",injury_focus:"performance",intensity:"high"},
+  {id:"EX_003",title:"Copenhagen Plank",description:"Isometric adductor strengthening",tags:"plank, adductor",body_part:"core",difficulty:"intermediate",equipment:"none",injury_focus:"groin rehab",intensity:"medium"},
+  {id:"EX_004",title:"Seated DB Shoulder Press",description:"Vertical pressing for shoulder strength",tags:"press, shoulder",body_part:"upper",difficulty:"intermediate",equipment:"dumbbell",injury_focus:"none",intensity:"medium"},
+  {id:"EX_005",title:"Wall Sit",description:"Isometric quad endurance hold",tags:"isometric, quad",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"knee rehab",intensity:"low"},
+  {id:"EX_006",title:"Lateral Band Walk",description:"Hip stability activation",tags:"glute med, band",body_part:"lower",difficulty:"beginner",equipment:"band",injury_focus:"hip rehab",intensity:"low"},
+  {id:"EX_007",title:"Barbell Back Squat",description:"Heavy compound squat",tags:"squat, compound",body_part:"lower",difficulty:"advanced",equipment:"barbell",injury_focus:"none",intensity:"high"},
+  {id:"EX_008",title:"Single-Leg Hop",description:"Explosive unilateral hop",tags:"plyometric, unilateral",body_part:"lower",difficulty:"advanced",equipment:"none",injury_focus:"performance",intensity:"high"},
+  {id:"EX_009",title:"Dead Bug",description:"Core stabilization drill",tags:"core, stability",body_part:"core",difficulty:"beginner",equipment:"bodyweight",injury_focus:"back rehab",intensity:"low"},
+  {id:"EX_010",title:"Clamshell",description:"Hip external rotation exercise",tags:"glute med",body_part:"lower",difficulty:"beginner",equipment:"none",injury_focus:"hip rehab",intensity:"low"},
+  {id:"EX_011",title:"Push-Up",description:"Bodyweight upper push",tags:"push, bodyweight",body_part:"upper",difficulty:"beginner",equipment:"bodyweight",injury_focus:"none",intensity:"medium"},
+  {id:"EX_012",title:"Plank Shoulder Taps",description:"Dynamic plank with shoulder load",tags:"plank, stability",body_part:"core",difficulty:"intermediate",equipment:"bodyweight",injury_focus:"shoulder rehab",intensity:"low"},
+  {id:"EX_013",title:"Trap Bar Deadlift",description:"Lower body hinge strength",tags:"hinge, compound",body_part:"lower",difficulty:"advanced",equipment:"barbell",injury_focus:"none",intensity:"high"},
+  {id:"EX_014",title:"Bird Dog",description:"Spinal stability drill",tags:"core, rehab",body_part:"core",difficulty:"beginner",equipment:"bodyweight",injury_focus:"back rehab",intensity:"low"},
+  {id:"EX_015",title:"Sprint Intervals",description:"High intensity sprint work",tags:"sprint, conditioning",body_part:"full body",difficulty:"advanced",equipment:"none",injury_focus:"performance",intensity:"high"},
+  {id:"EX_016",title:"Tempo Runs",description:"Moderate sustained running",tags:"endurance, running",body_part:"full body",difficulty:"intermediate",equipment:"none",injury_focus:"performance",intensity:"medium"},
+  {id:"EX_017",title:"Step-Ups",description:"Controlled unilateral strength",tags:"step, unilateral",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"knee rehab",intensity:"low"},
+  {id:"EX_018",title:"Overhead Carry",description:"Loaded shoulder stability",tags:"carry, stability",body_part:"full body",difficulty:"intermediate",equipment:"dumbbell",injury_focus:"shoulder rehab",intensity:"medium"},
+  {id:"EX_019",title:"Bench Press",description:"Horizontal press strength",tags:"press, compound",body_part:"upper",difficulty:"advanced",equipment:"barbell",injury_focus:"none",intensity:"high"},
+  {id:"EX_020",title:"Side Plank",description:"Lateral core stability",tags:"plank, core",body_part:"core",difficulty:"beginner",equipment:"bodyweight",injury_focus:"back rehab",intensity:"low"},
+  {id:"EX_021",title:"Reverse Lunges",description:"Backward stepping lunge",tags:"lunge, unilateral",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"knee rehab",intensity:"low"},
+  {id:"EX_022",title:"Forward Lunges",description:"Forward lunge movement",tags:"lunge, unilateral",body_part:"lower",difficulty:"intermediate",equipment:"bodyweight",injury_focus:"none",intensity:"medium"},
+  {id:"EX_023",title:"Bulgarian Split Squat",description:"Elevated rear foot squat",tags:"squat, unilateral",body_part:"lower",difficulty:"advanced",equipment:"bodyweight",injury_focus:"none",intensity:"high"},
+  {id:"EX_024",title:"Box Jumps",description:"Explosive jump onto box",tags:"plyometric",body_part:"lower",difficulty:"advanced",equipment:"none",injury_focus:"performance",intensity:"high"},
+  {id:"EX_025",title:"Hamstring Bridge",description:"Isometric posterior chain hold",tags:"bridge, hamstring",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"hamstring rehab",intensity:"low"},
+  {id:"EX_026",title:"Nordic Curl",description:"Eccentric hamstring strength",tags:"curl, hamstring",body_part:"lower",difficulty:"advanced",equipment:"bodyweight",injury_focus:"none",intensity:"high"},
+  {id:"EX_027",title:"Calf Raises",description:"Ankle plantarflexion strength",tags:"calf",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"ankle rehab",intensity:"low"},
+  {id:"EX_028",title:"Single-Leg Calf Raise",description:"Unilateral calf strength",tags:"calf, unilateral",body_part:"lower",difficulty:"intermediate",equipment:"bodyweight",injury_focus:"ankle rehab",intensity:"medium"},
+  {id:"EX_029",title:"Ankle Hops",description:"Reactive ankle stiffness drill",tags:"plyometric",body_part:"lower",difficulty:"intermediate",equipment:"none",injury_focus:"performance",intensity:"medium"},
+  {id:"EX_030",title:"Broad Jumps",description:"Horizontal explosive power",tags:"jump, plyometric",body_part:"lower",difficulty:"advanced",equipment:"none",injury_focus:"performance",intensity:"high"},
+  {id:"EX_031",title:"Hollow Hold",description:"Anterior core isometric",tags:"core",body_part:"core",difficulty:"beginner",equipment:"bodyweight",injury_focus:"back rehab",intensity:"low"},
+  {id:"EX_032",title:"Hanging Knee Raises",description:"Dynamic core lift",tags:"core, hanging",body_part:"core",difficulty:"intermediate",equipment:"bar",injury_focus:"none",intensity:"medium"},
+  {id:"EX_033",title:"Russian Twists",description:"Rotational core exercise",tags:"core, rotation",body_part:"core",difficulty:"intermediate",equipment:"bodyweight",injury_focus:"none",intensity:"medium"},
+  {id:"EX_034",title:"Cable Rows",description:"Horizontal pulling movement",tags:"pull, upper",body_part:"upper",difficulty:"intermediate",equipment:"cable",injury_focus:"none",intensity:"medium"},
+  {id:"EX_035",title:"Pull-Ups",description:"Vertical pulling strength",tags:"pull, bodyweight",body_part:"upper",difficulty:"advanced",equipment:"bar",injury_focus:"none",intensity:"high"},
+  {id:"EX_036",title:"Face Pulls",description:"Shoulder stability and posture",tags:"pull, shoulder",body_part:"upper",difficulty:"beginner",equipment:"cable",injury_focus:"shoulder rehab",intensity:"low"},
+  {id:"EX_037",title:"YT Raises",description:"Scapular control exercise",tags:"shoulder, rehab",body_part:"upper",difficulty:"beginner",equipment:"dumbbell",injury_focus:"shoulder rehab",intensity:"low"},
+  {id:"EX_038",title:"Lateral Raises",description:"Isolated shoulder abduction",tags:"shoulder",body_part:"upper",difficulty:"beginner",equipment:"dumbbell",injury_focus:"none",intensity:"medium"},
+  {id:"EX_039",title:"Incline DB Press",description:"Upper chest pressing",tags:"press",body_part:"upper",difficulty:"intermediate",equipment:"dumbbell",injury_focus:"none",intensity:"medium"},
+  {id:"EX_040",title:"Dips",description:"Bodyweight pressing movement",tags:"push",body_part:"upper",difficulty:"advanced",equipment:"bodyweight",injury_focus:"none",intensity:"high"},
+  {id:"EX_041",title:"Cat-Cow",description:"Spinal mobility drill",tags:"mobility, spine",body_part:"core",difficulty:"beginner",equipment:"bodyweight",injury_focus:"back rehab",intensity:"low"},
+  {id:"EX_042",title:"Thread the Needle",description:"Thoracic mobility exercise",tags:"mobility, rotation",body_part:"core",difficulty:"beginner",equipment:"bodyweight",injury_focus:"back rehab",intensity:"low"},
+  {id:"EX_043",title:"Hip Flexor Stretch",description:"Stretch for anterior hip",tags:"mobility",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"hip rehab",intensity:"low"},
+  {id:"EX_044",title:"Downward Dog",description:"Full body stretch",tags:"mobility",body_part:"full body",difficulty:"beginner",equipment:"bodyweight",injury_focus:"none",intensity:"low"},
+  {id:"EX_045",title:"90/90 Hip Stretch",description:"Hip rotation mobility",tags:"mobility",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"hip rehab",intensity:"low"},
+  {id:"EX_046",title:"Sled Push",description:"Horizontal force production",tags:"conditioning",body_part:"lower",difficulty:"advanced",equipment:"sled",injury_focus:"performance",intensity:"high"},
+  {id:"EX_047",title:"Sled Pull",description:"Posterior chain conditioning",tags:"conditioning",body_part:"lower",difficulty:"advanced",equipment:"sled",injury_focus:"performance",intensity:"high"},
+  {id:"EX_048",title:"Battle Ropes",description:"Upper body conditioning",tags:"conditioning",body_part:"full body",difficulty:"intermediate",equipment:"rope",injury_focus:"performance",intensity:"high"},
+  {id:"EX_049",title:"Rowing Machine",description:"Endurance conditioning",tags:"endurance",body_part:"full body",difficulty:"beginner",equipment:"machine",injury_focus:"performance",intensity:"medium"},
+  {id:"EX_050",title:"Cycling",description:"Endurance cardio",tags:"endurance",body_part:"full body",difficulty:"beginner",equipment:"bike",injury_focus:"performance",intensity:"medium"},
+  {id:"EX_051",title:"Glute Bridge",description:"Basic posterior chain activation",tags:"bridge",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"hip rehab",intensity:"low"},
+  {id:"EX_052",title:"Single-Leg Bridge",description:"Unilateral glute strength",tags:"bridge",body_part:"lower",difficulty:"intermediate",equipment:"bodyweight",injury_focus:"hip rehab",intensity:"medium"},
+  {id:"EX_053",title:"Hip Thrust",description:"Loaded glute strength",tags:"hip thrust",body_part:"lower",difficulty:"advanced",equipment:"barbell",injury_focus:"none",intensity:"high"},
+  {id:"EX_054",title:"Kettlebell Swing",description:"Explosive hip hinge",tags:"hinge",body_part:"lower",difficulty:"intermediate",equipment:"kettlebell",injury_focus:"performance",intensity:"high"},
+  {id:"EX_055",title:"Good Morning",description:"Posterior chain hinge",tags:"hinge",body_part:"lower",difficulty:"advanced",equipment:"barbell",injury_focus:"none",intensity:"high"},
+  {id:"EX_056",title:"Isometric Lunge Hold",description:"Static lunge stability",tags:"lunge",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"knee rehab",intensity:"low"},
+  {id:"EX_057",title:"Single-Leg Balance",description:"Balance and proprioception",tags:"balance",body_part:"lower",difficulty:"beginner",equipment:"bodyweight",injury_focus:"ankle rehab",intensity:"low"},
+  {id:"EX_058",title:"Perturbation Training",description:"External stability challenges",tags:"stability",body_part:"full body",difficulty:"intermediate",equipment:"band",injury_focus:"knee rehab",intensity:"medium"},
+  {id:"EX_059",title:"Agility Ladder Drills",description:"Footwork and coordination",tags:"agility",body_part:"full body",difficulty:"intermediate",equipment:"ladder",injury_focus:"performance",intensity:"medium"},
+  {id:"EX_060",title:"Shuttle Runs",description:"Change of direction conditioning",tags:"conditioning",body_part:"full body",difficulty:"advanced",equipment:"none",injury_focus:"performance",intensity:"high"},
+];
+
+function setPipeActive(step) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('pipe-' + i);
+    if (el) el.classList.toggle('active', i === step);
+  }
+}
+
+function tokenize(s) {
+  return s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean);
+}
+
+function scoreExercise(ex, tokens) {
+  const corpus = [ex.title, ex.description, ex.tags, ex.body_part, ex.injury_focus, ex.difficulty]
+    .join(' ').toLowerCase();
+  let score = 0;
+  for (const t of tokens) {
+    if (corpus.includes(t)) score += 1;
+    if (ex.injury_focus.toLowerCase().includes(t)) score += 2;
+    if (ex.body_part.toLowerCase().includes(t))    score += 1;
+    if (ex.tags.toLowerCase().includes(t))         score += 1;
+  }
+  return score;
+}
+
+function retrieve(query, topK = 12) {
+  const tokens = tokenize(query);
+  const scored = EXERCISES.map(ex => ({ ...ex, _score: scoreExercise(ex, tokens) }))
+    .filter(ex => ex._score > 0)
+    .sort((a, b) => b._score - a._score);
+  if (scored.length === 0) return EXERCISES.slice(0, topK);
+  return scored.slice(0, topK);
+}
+
+async function rerankWithLLM(query, candidates, profile, topN = 5) {
+  const resp = await fetch('https://backend-lingering-shape-7460.fly.dev/recommend', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      query: query,
+      top_k: candidates.length,
+      top_n: topN,
+      user_profile: {
+        goals: profile.goal,
+        injuries: profile.injuries,
+        equipment: profile.equipment,
+        preferred_intensity: profile.intensity,
+        experience_level: profile.level
+      }
+    })
+  });
+  if (!resp.ok) throw new Error(`API error ${resp.status}`);
+  const data = await resp.json();
+  return { recommendations: data.recommendations, intent: data.query_intent };
+}
+
+function setQuery(el) {
+  document.getElementById('queryInput').value = el.textContent;
+  document.getElementById('queryInput').focus();
+}
+
+function clearAll() {
+  document.getElementById('queryInput').value = '';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results-meta').style.display = 'none';
+  document.getElementById('error').style.display = 'none';
+  setPipeActive(0);
+}
+
+function toggleProfile(el) {
+  const panel = document.getElementById('profilePanel');
+  const icon  = el.querySelector('.toggle-icon');
+  panel.classList.toggle('visible');
+  icon.classList.toggle('open');
+}
+
+function getProfile() {
+  return {
+    goal:      document.getElementById('pGoal').value,
+    level:     document.getElementById('pLevel').value,
+    injuries:  document.getElementById('pInjuries').value.trim(),
+    equipment: document.getElementById('pEquipment').value.trim(),
+    intensity: document.getElementById('pIntensity').value,
+  };
+}
+
+function diffColor(d) {
+  return d === 'beginner' ? '#00ff8c' : d === 'intermediate' ? '#00e5ff' : '#ff6b35';
+}
+
+function renderCards(results, retrieval_count, intent) {
+  const meta = document.getElementById('results-meta');
+  meta.style.display = 'flex';
+  meta.innerHTML = `
+    <span class="meta-tag">RETRIEVED <span>${retrieval_count}</span> CANDIDATES</span>
+    <span class="meta-tag">→ LLM RE-RANKED TO <span>${results.length}</span></span>
+    ${intent ? `<span class="meta-tag">INTENT <span>${intent.toUpperCase()}</span></span>` : ''}
+    <span class="meta-tag">MODEL <span>CLAUDE</span></span>
+  `;
+
+  const el = document.getElementById('results');
+  el.style.display = 'block';
+  el.innerHTML = results.map((ex, i) => {
+    const fillPct = Math.round((ex.relevance_score || 0) * 100);
+    const isTop   = i === 0;
+    return `
+      <div class="result-card">
+        <div class="rank-num ${isTop ? 'top' : ''}">${String(i+1).padStart(2,'0')}</div>
+        <div class="card-body">
+          <div class="card-title">${ex.title}</div>
+          <div class="card-desc">${ex.description}</div>
+          ${ex.rank_reason ? `<div class="card-reason">↳ ${ex.rank_reason}</div>` : ''}
+          <div class="card-tags">
+            <span class="tag tag-body">${ex.body_part}</span>
+            <span class="tag tag-diff" style="color:${diffColor(ex.difficulty)}">${ex.difficulty}</span>
+            <span class="tag tag-equip">${ex.equipment}</span>
+            ${ex.injury_focus && ex.injury_focus !== 'none' ? `<span class="tag tag-inj">${ex.injury_focus}</span>` : ''}
+          </div>
+        </div>
+        <div class="score-bar">
+          <div class="score-fill" style="height:${fillPct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function search() {
+  const query = document.getElementById('queryInput').value.trim();
+  if (!query) return;
+
+  const btn    = document.getElementById('searchBtn');
+  const loading = document.getElementById('loading');
+  const errEl  = document.getElementById('error');
+  const subTxt = document.getElementById('loadingSub');
+
+  btn.disabled = true;
+  errEl.style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results-meta').style.display = 'none';
+  loading.style.display = 'block';
+
+  setPipeActive(1);
+  subTxt.textContent = 'Stage 1 of 2 — keyword retrieval';
+
+  try {
+    const candidates = retrieve(query, 12);
+    setPipeActive(2);
+
+    subTxt.textContent = 'Stage 2 of 2 — LLM re-ranking with Claude…';
+    setPipeActive(3);
+
+    const profile = getProfile();
+    const { recommendations, intent } = await rerankWithLLM(query, candidates, profile, 5);
+
+    setPipeActive(4);
+    loading.style.display = 'none';
+    renderCards(recommendations, candidates.length, intent);
+
+  } catch (err) {
+    loading.style.display = 'none';
+    setPipeActive(0);
+    errEl.style.display = 'block';
+    errEl.textContent = `Error: ${err.message}`;
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('queryInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); search(); }
+});
+</script>
+</body>
+</html>
