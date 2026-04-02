@@ -1,4 +1,4 @@
-# Apollo LLM Coaching App — Take-Home Assessment
+# Apollo LLM Coaching App
 
 ## Time Log
 
